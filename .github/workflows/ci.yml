@@ -20,14 +20,22 @@ jobs:
           distribution: "temurin"
           cache: "maven"
 
+      # Install Chrome (required for Selenium)
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: Run tests
+        run: mvn -B test
+
+      - name: List target folder for debugging
+        run: ls -R target
+
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-html-report
           path: target/cucumber-html-report.html
-
-
-      # No manual Chrome/ChromeDriver install here
-
-      - name: Run tests
-        run: mvn -B test
+          if-no-files-found: warn
