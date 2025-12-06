@@ -1,28 +1,30 @@
 name: CI
 
 on:
-  push:
-    branches: [ main, master ]
+  # Manual trigger from GitHub UI
   workflow_dispatch:
+
+  # Scheduled trigger (every night at midnight UTC)
   schedule:
-    - cron: '0 3 * * 0' # weekly run (UTC)
+    - cron: "0 0 * * *"
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 11
+      # 1) Check out your repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) Set up Java (adjust version if needed: 11, 17, etc.)
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven"
+
+      # 3) Run your Maven tests (this will run your Cucumber tests)
       - name: Run tests
         run: mvn -B test
