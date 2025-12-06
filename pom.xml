@@ -14,7 +14,6 @@
         <maven.compiler.target>11</maven.compiler.target>
         <cucumber.version>7.14.0</cucumber.version>
         <selenium.version>4.21.0</selenium.version>
-        <webdrivermanager.version>5.9.2</webdrivermanager.version>
         <slf4j.version>2.0.12</slf4j.version>
     </properties>
 
@@ -35,15 +34,19 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Cucumber Reporting -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-reporting</artifactId>
+            <version>5.7.0</version>
+        </dependency>
+
         <!-- Selenium -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
         </dependency>
-
-        <!-- WebDriverManager (Auto-download proper ChromeDriver) -->
-       
 
         <!-- JUnit -->
         <dependency>
@@ -53,7 +56,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- SLF4J (Required for WebDriverManager Logging) -->
+        <!-- SLF4J (Logging) -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -64,11 +67,41 @@
 
     <build>
         <plugins>
+
+            <!-- Run Tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
             </plugin>
+
+            <!-- Generate Cucumber HTML Report -->
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>5.7.0</version>
+                <executions>
+                    <execution>
+                        <id>cucumber-html-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <jsonFiles>
+                                <param>target/cucumber.json</param>
+                            </jsonFiles>
+                            <outputDirectory>target/cucumber-html-report</outputDirectory>
+                            <projectName>Pet Store Automation</projectName>
+                            <buildNumber>1</buildNumber>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
