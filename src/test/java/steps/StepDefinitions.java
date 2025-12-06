@@ -41,7 +41,10 @@ public class StepDefinitions {
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--headless=new");
-        driver = new ChromeDriver(options); 
+        options.addArguments("--disable-gpu");
+        options.addArguments("--window-size=1920,1080");
+    
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(8));
         wait = new WebDriverWait(driver, Duration.ofSeconds(15));
