@@ -25,6 +25,16 @@ jobs:
           distribution: "temurin"
           cache: "maven"
 
-      # 3) Run your Maven tests (this will run your Cucumber tests)
+      # 3)
+      - name: Install ChromeDriver
+        run: |
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
+          LATEST=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          wget https://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/bin/chromedriver
+          sudo chmod +x /usr/bin/chromedriver
+
+      # 4) Run your Maven tests (this will run your Cucumber tests)
       - name: Run tests
         run: mvn -B test
