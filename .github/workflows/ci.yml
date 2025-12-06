@@ -1,10 +1,7 @@
 name: CI
 
 on:
-  # Manual trigger from GitHub UI
   workflow_dispatch:
-
-  # Scheduled trigger (every night at midnight UTC)
   schedule:
     - cron: "0 0 * * *"
 
@@ -13,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Check out your repository code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2) Set up Java (adjust version if needed: 11, 17, etc.)
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
@@ -25,24 +20,7 @@ jobs:
           distribution: "temurin"
           cache: "maven"
 
-      - name: Install Google Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
+      # No manual Chrome/ChromeDriver install here
 
-
-      # 3)
-      - name: Install ChromeDriver
-        run: |
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
-          LATEST=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget https://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/bin/chromedriver
-          sudo chmod +x /usr/bin/chromedriver
-
-      # 4) Run your Maven tests (this will run your Cucumber tests)
       - name: Run tests
         run: mvn -B test
